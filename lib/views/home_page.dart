@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              bolinhaDosValores(context, '0', 'Glicemia Matinal', ''),
+              bolinhaDosValores(context, '0', 'Glicemia Matinal', 'Ao acordar'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -60,7 +60,8 @@ class _HomePageState extends State<HomePage> {
                       context, '0', 'Glicemia pós-prandial', 'Jantar'),
                 ],
               ),
-              bolinhaDosValores(context, '0', 'Glicemia Noturna', ''),
+              bolinhaDosValores(
+                  context, '0', 'Glicemia Noturna', 'Antes de dormir'),
             ],
           ),
         ),
@@ -95,8 +96,8 @@ GestureDetector bolinhaDosValores(context, glicemia, rotina, refeicao) {
       Navigator.of(context).pushNamed('/create');
     },
     child: Container(
-      height: 150,
-      width: 150,
+      height: 130,
+      width: 130,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.lightBlue,
@@ -145,15 +146,32 @@ RichText sumarioRotina(rotina) {
   );
 }
 
-RichText valoresGlicemia(glicemia) {
-  return RichText(
-    text: TextSpan(
-      text: glicemia,
+SizedBox valoresGlicemia(glicemia) {
+  return SizedBox(
+    height: 50,
+    width: 50,
+    
+    child: TextFormField(
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 40,
         color: Colors.white,
       ),
+      keyboardType: TextInputType.number,
+      onSaved: (value) => glicemia = value!,
     ),
   );
 }
+
+// RichText valoresGlicemia(glicemia) {
+//   return RichText(
+//     text: TextSpan(
+//       text: glicemia,
+//       style: TextStyle(
+//         fontWeight: FontWeight.bold,
+//         fontSize: 40,
+//         color: Colors.white,
+//       ),
+//     ),
+//   );
+// }
