@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_typing_uninitialized_variables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -12,13 +14,18 @@ class HistoricoPage extends StatefulWidget {
 }
 
 class _HistoricoPageState extends State<HistoricoPage> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   var _itemSelecionado;
 
   void _dropDownItemSelected(String novoItem) {
     setState(() {
-      this._itemSelecionado = novoItem;
+      _itemSelecionado = novoItem;
     });
   }
+
+  List<Widget> x = <Widget>[glicemiaDoDia(10, 10, 10, 10, 10, 10, 10)];
 
   List<String> list1 = <String>['2020', '2021', '2022', '2023'];
 
@@ -48,41 +55,76 @@ class _HistoricoPageState extends State<HistoricoPage> {
         ),
         body: Column(
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 5,
-              child: DropdownButton<String>(
-                  hint: Text('2023'),
-                  dropdownColor: Colors.white,
-                  items: list1.map((String dropDownStringItem) {
-                    return DropdownMenuItem<String>(
-                      value: dropDownStringItem,
-                      child: Text(dropDownStringItem),
-                    );
-                  }).toList(),
-                  onChanged: (String? novoItemSelecionado) {
-                    _dropDownItemSelected(novoItemSelecionado!);
-                    setState(() {
-                      this._itemSelecionado = novoItemSelecionado;
-                    });
-                  },
-                  value: _itemSelecionado),
+            Expanded(
+              child: ListView(children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 5,
+                      child: DropdownButton<String>(
+                          hint: Text('2023'),
+                          dropdownColor: Colors.white,
+                          items: list1.map((String dropDownStringItem) {
+                            return DropdownMenuItem<String>(
+                              value: dropDownStringItem,
+                              child: Text(dropDownStringItem),
+                            );
+                          }).toList(),
+                          onChanged: (String? novoItemSelecionado) {
+                            _dropDownItemSelected(novoItemSelecionado!);
+                            setState(() {
+                              _itemSelecionado = novoItemSelecionado;
+                            });
+                          },
+                          value: _itemSelecionado),
+                    ),
+                    SizedBox(
+                      height: 50,
+                      width: 1000,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          meses('Junho'),
+                          meses('Maio'),
+                          meses('Abril'),
+                          meses('Março'),
+                          meses('Fevereiro'),
+                          meses('Janeiro'),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Expanded(
+                          child: StreamBuilder<
+                                  QuerySnapshot<Map<String, dynamic>>>(
+                              stream: firestore.collection('Ano').snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                }
+                                var glicemias = snapshot.data!.docs;
+                                return ListView(
+                                    children: glicemias
+                                        .map((task) => glicemiaDoDia(
+                                              task['dia'],
+                                              task['matinal'],
+                                              task['preAlmoco'],
+                                              task['posAlmoco'],
+                                              task['preJanta'],
+                                              task['posJanta'],
+                                              task['noturna'],
+                                            ))
+                                        .toList());
+                              }),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ]),
             ),
-            SizedBox(
-              height: 50,
-              width: 1000,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  meses('Junho'),
-                  meses('Maio'),
-                  meses('Abril'),
-                  meses('Março'),
-                  meses('Fevereiro'),
-                  meses('Janeiro'),
-                ],
-              ),
-            ),
-            glicemiaDoDia(10, 10, 10, 10, 10, 10, 10),
           ],
         ),
         bottomNavigationBar: Container(
@@ -112,7 +154,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
   }
 }
 
-Container glicemiaDoDia(dia, matinal, preAlmoco, posAlmoco, preJanta, posJanta, noturna) {
+Container glicemiaDoDia(
+    dia, matinal, preAlmoco, posAlmoco, preJanta, posJanta, noturna) {
   return Container(
     height: 150,
     margin: EdgeInsets.all(5),
@@ -123,22 +166,54 @@ Container glicemiaDoDia(dia, matinal, preAlmoco, posAlmoco, preJanta, posJanta, 
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text('Dia: $dia', style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),),
-        
+        Text(
+          'Dia: $dia',
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         Row(
           children: [
-            SizedBox(child: Container(color: Colors.grey, width: 1, height: 140,),),
-            SizedBox(width: 10,),
+            SizedBox(
+              child: Container(
+                color: Colors.grey,
+                width: 1,
+                height: 140,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Matinal: $matinal', style: TextStyle(color: Colors.white),),
-                Text('Pré-pradial - Almoço: $preAlmoco', style: TextStyle(color: Colors.white),),
-                Text('Pós-pradial - Almoço: $posAlmoco', style: TextStyle(color: Colors.white),),
-                Text('Pré-pradial - Janta: $preJanta', style: TextStyle(color: Colors.white),),
-                Text('Pós-pradial - Janta: $posJanta', style: TextStyle(color: Colors.white),),
-                Text('Noturna: $noturna', style: TextStyle(color: Colors.white),),
+                Text(
+                  'Matinal: $matinal',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Pré-pradial - Almoço: $preAlmoco',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Pós-pradial - Almoço: $posAlmoco',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Pré-pradial - Janta: $preJanta',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Pós-pradial - Janta: $posJanta',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Noturna: $noturna',
+                  style: TextStyle(color: Colors.white),
+                ),
               ],
             ),
           ],

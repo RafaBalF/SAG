@@ -96,8 +96,8 @@ GestureDetector bolinhaDosValores(context, glicemia, rotina, refeicao) {
       Navigator.of(context).pushNamed('/create');
     },
     child: Container(
-      height: 130,
-      width: 130,
+      height: 120,
+      width: 120,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.lightBlue,
@@ -150,11 +150,10 @@ SizedBox valoresGlicemia(glicemia) {
   return SizedBox(
     height: 50,
     width: 50,
-    
     child: TextFormField(
       style: TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 40,
+        fontSize: 25,
         color: Colors.white,
       ),
       keyboardType: TextInputType.number,
