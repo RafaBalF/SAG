@@ -78,9 +78,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                           },
                           value: _itemSelecionado),
                     ),
-                    SizedBox(
-                      height: 50,
-                      width: 1000,
+                    Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
@@ -93,34 +91,35 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         ],
                       ),
                     ),
-                    Column(
-                      children: [
-                        Expanded(
-                          child: StreamBuilder<
-                                  QuerySnapshot<Map<String, dynamic>>>(
-                              stream: firestore.collection('Ano').snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                var glicemias = snapshot.data!.docs;
-                                return ListView(
-                                    children: glicemias
-                                        .map((task) => glicemiaDoDia(
-                                              task['dia'],
-                                              task['matinal'],
-                                              task['preAlmoco'],
-                                              task['posAlmoco'],
-                                              task['preJanta'],
-                                              task['posJanta'],
-                                              task['noturna'],
-                                            ))
-                                        .toList());
-                              }),
-                        ),
-                      ],
-                    ),
+                    // Column(
+                    //   children: [
+                    //     Flexible(
+                    //       child: StreamBuilder<
+                    //               QuerySnapshot<Map<String, dynamic>>>(
+                    //           stream:
+                    //               firestore.collection('Glicemia').snapshots(),
+                    //           builder: (context, snapshot) {
+                    //             if (!snapshot.hasData) {
+                    //               return Center(
+                    //                   child: CircularProgressIndicator());
+                    //             }
+                    //             var glicemias = snapshot.data!.docs;
+                    //             return ListView(
+                    //                 children: glicemias
+                    //                     .map((task) => glicemiaDoDia(
+                    //                           task['dia'],
+                    //                           task['matinal'],
+                    //                           task['preAlmoco'],
+                    //                           task['posAlmoco'],
+                    //                           task['preJanta'],
+                    //                           task['posJanta'],
+                    //                           task['noturna'],
+                    //                         ))
+                    //                     .toList());
+                    //           }),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ]),
