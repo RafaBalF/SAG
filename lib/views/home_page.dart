@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,6 +13,37 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var formKey = GlobalKey<FormState>();
+
+  int? glicemiaMatinal;
+  int? glicemiaPreAlmoco;
+  int? glicemiaPosAlmoco;
+  int? glicemiaPreJanta;
+  int? glicemiaPosJanta;
+  int? glicemiaNoturna;
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  DateTime date = DateTime.now();
+
+  void salvar(BuildContext context) {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+
+      firestore.collection('Glicemia').add({
+        'dia': date.day,
+        'mes': date.month,
+        'ano': date.year ,
+        'matinal': glicemiaMatinal,
+        'preAlmoco': glicemiaPreAlmoco,
+        'posAlmoco': glicemiaPosAlmoco,
+        'preJanta': glicemiaPreJanta,
+        'posJanta': glicemiaPosJanta,
+        'noturna': glicemiaNoturna,
+        // 'uid': auth.currentUser!.uid,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,27 +74,29 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              bolinhaDosValores(context, '0', 'Glicemia Matinal', 'Ao acordar'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  bolinhaDosValores(
-                      context, '0', 'Glicemia pré-prandial', 'Almoço'),
-                  bolinhaDosValores(
-                      context, '0', 'Glicemia pós-prandial', 'Almoço'),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  bolinhaDosValores(
-                      context, '0', 'Glicemia pré-prandial', 'Jantar'),
-                  bolinhaDosValores(
-                      context, '0', 'Glicemia pós-prandial', 'Jantar'),
-                ],
-              ),
               bolinhaDosValores(
-                  context, '0', 'Glicemia Noturna', 'Antes de dormir'),
+                  context, glicemiaMatinal, 'Glicemia Matinal', 'Ao acordar'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  bolinhaDosValores(context, glicemiaPreAlmoco,
+                      'Glicemia pré-prandial', 'Almoço'),
+                  bolinhaDosValores(context, glicemiaPosAlmoco,
+                      'Glicemia pós-prandial', 'Almoço'),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  bolinhaDosValores(context, glicemiaPreJanta,
+                      'Glicemia pré-prandial', 'Jantar'),
+                  bolinhaDosValores(context, glicemiaPosJanta,
+                      'Glicemia pós-prandial', 'Jantar'),
+                ],
+              ),
+              bolinhaDosValores(context, glicemiaNoturna, 'Glicemia Noturna',
+                  'Antes de dormir'),
+              ElevatedButton(onPressed: () => salvar(context), child: Text('Registrar'))
             ],
           ),
         ),
@@ -90,33 +125,28 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-GestureDetector bolinhaDosValores(context, glicemia, rotina, refeicao) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.of(context).pushNamed('/create');
-    },
-    child: Container(
-      height: 120,
-      width: 120,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.lightBlue,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            valoresGlicemia(glicemia),
-            SizedBox(
-              height: 10,
-            ),
-            sumarioRotina(rotina),
-            SizedBox(
-              height: 5,
-            ),
-            prandial(refeicao),
-          ],
-        ),
+Container bolinhaDosValores(context, glicemia, rotina, refeicao) {
+  return Container(
+    height: 120,
+    width: 120,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Colors.lightBlue,
+    ),
+    child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          valoresGlicemia(glicemia),
+          SizedBox(
+            height: 10,
+          ),
+          sumarioRotina(rotina),
+          SizedBox(
+            height: 5,
+          ),
+          prandial(refeicao),
+        ],
       ),
     ),
   );
@@ -139,7 +169,7 @@ RichText sumarioRotina(rotina) {
     text: TextSpan(
       text: rotina,
       style: TextStyle(
-        fontSize: 12,
+        fontSize: 10,
         color: Colors.white,
       ),
     ),

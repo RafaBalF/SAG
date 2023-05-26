@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sag/views/historico_page.dart';
 import 'package:sag/views/home_page.dart';
 import 'package:sag/views/login_page.dart';
+import 'package:sag/views/register_page.dart';
 
 const firebaseConfig = FirebaseOptions(
   apiKey: "AIzaSyAPmJJWkb6eUKr5ZOPEJbibwrq3wMC32B8",
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
           '/login': (BuildContext context) => LoginPage(),
           '/home': (BuildContext context) => HomePage(),
           '/historico': (BuildContext context) => HistoricoPage(),
+          '/cadastro': (BuildContext context) => RegisterPage(),
         });
   }
 }

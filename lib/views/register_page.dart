@@ -3,47 +3,68 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   String email = '';
   String senha = '';
+  String confirmarSenha = '';
 
   var formKey = GlobalKey<FormState>();
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  void login(BuildContext context) async {
+  void register(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      try {
-        await auth.signInWithEmailAndPassword(email: email, password: senha);
-
-        Navigator.of(context).pushNamed('/home');
-
-      } catch (e) {
-        showDialog(
+      if(senha != confirmarSenha){
+         showDialog(
           context: context,
           builder: (_) {
             return AlertDialog(
               title: Text('Atenção'),
-              content: Text('Login Invalido'),
+              content: Text('Cadastro Invalido'),
+            );
+          },
+        );
+      } else {
+        try {
+        print(email);
+        print(senha);
+        await auth.createUserWithEmailAndPassword(
+            email: email, password: senha);
+
+        Navigator.of(context).pushNamed('/home');
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (_) {
+            print(e);
+            return AlertDialog(
+              title: Text('Atenção'),
+              content: Text('Cadastro Invalido'),
             );
           },
         );
       }
+      }
+
+      
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:  AppBar(
+          title: Text('Registre-se'),
+        ),
       body: Form(
           key: formKey,
           child: Column(
@@ -63,7 +84,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
                     labelText: 'Login',
                   ),
                   onSaved: (value) => email = value!,
@@ -74,10 +94,19 @@ class _LoginPageState extends State<LoginPage> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
                     labelText: 'Senha',
                   ),
                   onSaved: (value) => senha = value!,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.all(8),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Confirmar Senha',
+                  ),
+                  onSaved: (value) => confirmarSenha = value!,
                 ),
               ),
               SizedBox(
@@ -85,16 +114,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  login(context);
+                  register(context);
                 },
-                child: Text('Entrar'),
+                child: Text('Registrar-se'),
               ),
-              SizedBox(
-                height: 3,
-              ),
-              TextButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/cadastro'),
-                  child: Text('Registrar-se'))
             ],
           )),
     );
