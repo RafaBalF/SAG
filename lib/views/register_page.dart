@@ -23,48 +23,46 @@ class _RegisterPageState extends State<RegisterPage> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      if(senha != confirmarSenha){
-         showDialog(
+      if (senha != confirmarSenha) {
+        showDialog(
           context: context,
           builder: (_) {
             return AlertDialog(
               title: Text('Atenção'),
-              content: Text('Cadastro Invalido'),
+              content: Text('Senhas não coincidem'),
             );
           },
         );
       } else {
         try {
-        print(email);
-        print(senha);
-        await auth.createUserWithEmailAndPassword(
-            email: email, password: senha);
+          print(email);
+          print(senha);
+          await auth.createUserWithEmailAndPassword(
+              email: email, password: senha);
 
-        Navigator.of(context).pushNamed('/home');
-      } catch (e) {
-        showDialog(
-          context: context,
-          builder: (_) {
-            print(e);
-            return AlertDialog(
-              title: Text('Atenção'),
-              content: Text('Cadastro Invalido'),
-            );
-          },
-        );
+          Navigator.of(context).pushNamed('/home');
+        } catch (e) {
+          showDialog(
+            context: context,
+            builder: (_) {
+              print(e);
+              return AlertDialog(
+                title: Text('Atenção'),
+                content: Text('Cadastro Invalido'),
+              );
+            },
+          );
+        }
       }
-      }
-
-      
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBar(
-          title: Text('Registre-se'),
-        ),
+      appBar: AppBar(
+        title: Text('Registre-se'),
+      ),
       body: Form(
           key: formKey,
           child: Column(

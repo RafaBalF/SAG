@@ -26,7 +26,6 @@ class _LoginPageState extends State<LoginPage> {
         await auth.signInWithEmailAndPassword(email: email, password: senha);
 
         Navigator.of(context).pushNamed('/home');
-
       } catch (e) {
         showDialog(
           context: context,
@@ -61,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 margin: EdgeInsets.all(8),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Login',

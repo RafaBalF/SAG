@@ -30,6 +30,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
   DateTime date = DateTime.now();
 
+  void delete(String id) {
+    firestore.collection('Glicemia').doc(id).delete();
+  }
+
   var itemSelecionado;
 
   void _dropDownItemSelected(int novoItem) {
@@ -44,8 +48,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(mesSelect == null) {
-    ifzaoGigante();}
+    if (mesSelect == null) {
+      ifzaoGigante();
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -141,14 +146,43 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
                                 return ListView(
                                     children: glicemias
-                                        .map((task) => glicemiaDoDia(
-                                              task['dia'],
-                                              task['matinal'],
-                                              task['preAlmoco'],
-                                              task['posAlmoco'],
-                                              task['preJanta'],
-                                              task['posJanta'],
-                                              task['noturna'],
+                                        .map((task) => Dismissible(
+                                              key: Key(task.id),
+                                              onDismissed: (_) =>
+                                                  delete(task.id),
+                                              background: Container(
+                                                  color: Colors.red,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text('Apagar',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 25)),
+                                                    ],
+                                                  )),
+                                              child: GestureDetector(
+                                                onDoubleTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed('/update',
+                                                          arguments: task.id);
+                                                },
+                                                child: glicemiaDoDia(
+                                                  task['dia'],
+                                                  task['matinal'],
+                                                  task['preAlmoco'],
+                                                  task['posAlmoco'],
+                                                  task['preJanta'],
+                                                  task['posJanta'],
+                                                  task['noturna'],
+                                                ),
+                                              ),
                                             ))
                                         .toList());
                               }),
@@ -257,62 +291,62 @@ class _HistoricoPageState extends State<HistoricoPage> {
   }
 
   ifzaoGigante() {
-    if(date.month == 1) {
+    if (date.month == 1) {
       setState(() {
         corJan = Colors.blueGrey;
       });
     }
-    if(date.month == 2) {
+    if (date.month == 2) {
       setState(() {
         corFev = Colors.blueGrey;
       });
     }
-    if(date.month == 3) {
+    if (date.month == 3) {
       setState(() {
         corMar = Colors.blueGrey;
       });
     }
-    if(date.month == 4) {
+    if (date.month == 4) {
       setState(() {
         corAbr = Colors.blueGrey;
       });
     }
-    if(date.month == 5) {
+    if (date.month == 5) {
       setState(() {
         corMai = Colors.blueGrey;
       });
     }
-    if(date.month == 6) {
+    if (date.month == 6) {
       setState(() {
         corJun = Colors.blueGrey;
       });
     }
-    if(date.month == 7) {
+    if (date.month == 7) {
       setState(() {
         corJul = Colors.blueGrey;
       });
     }
-    if(date.month == 8) {
+    if (date.month == 8) {
       setState(() {
         corAgo = Colors.blueGrey;
       });
     }
-    if(date.month == 9) {
+    if (date.month == 9) {
       setState(() {
         corSet = Colors.blueGrey;
       });
     }
-    if(date.month == 10) {
+    if (date.month == 10) {
       setState(() {
         corOut = Colors.blueGrey;
       });
     }
-    if(date.month == 11) {
+    if (date.month == 11) {
       setState(() {
         corNov = Colors.blueGrey;
       });
     }
-    if(date.month == 12) {
+    if (date.month == 12) {
       setState(() {
         corDez = Colors.blueGrey;
       });
