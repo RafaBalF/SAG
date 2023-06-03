@@ -133,6 +133,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
                                       isEqualTo: mesSelect ?? date.month)
                                   .where('ano',
                                       isEqualTo: itemSelecionado ?? date.year)
+                                  .where('uid',
+                                      isEqualTo: auth.currentUser!.uid)
                                   .snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {

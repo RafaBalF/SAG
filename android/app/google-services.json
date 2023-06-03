@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1020318080893",
+    "project_id": "sagv2-2b1b6",
+    "storage_bucket": "sagv2-2b1b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020318080893:android:6dbb40810129a81329f614",
+        "android_client_info": {
+          "package_name": "com.example.sag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020318080893-5qpnn06vurr37uoklshoh53smf5u3el4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3Zka_Y5aH-PHVqfftBJWYGF8gcXkLlNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020318080893-5qpnn06vurr37uoklshoh53smf5u3el4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

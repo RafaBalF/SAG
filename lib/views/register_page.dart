@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Container(
                 margin: EdgeInsets.all(8),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Login',
                   ),
@@ -90,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Container(
                 margin: EdgeInsets.all(8),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
+                  obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Senha',
                   ),
@@ -100,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Container(
                 margin: EdgeInsets.all(8),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
+                  obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Confirmar Senha',
                   ),
