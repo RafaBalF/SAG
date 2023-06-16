@@ -7,7 +7,22 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 class UpdatePage extends StatefulWidget {
-  const UpdatePage({super.key});
+  const UpdatePage({
+    super.key,
+    // required this.matinal,
+    // required this.preAlmoco,
+    // required this.posAlmoco,
+    // required this.preJanta,
+    // required this.posJanta,
+    // required this.noturna,
+  });
+
+  // final int matinal;
+  // final int preAlmoco;
+  // final int posAlmoco;
+  // final int preJanta;
+  // final int posJanta;
+  // final int noturna;
 
   @override
   State<UpdatePage> createState() => _UpdatePageState();
@@ -50,50 +65,59 @@ class _UpdatePageState extends State<UpdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    Object? data = ModalRoute.of(context)?.settings.arguments;
+    final data = ModalRoute.of(context)?.settings.arguments as Map;
 
-    var id = data;
-
-    print(id);
+    var id = data["id"];
+    var matinalValue = data["matinal"];
+    var preAlmocoValue = data["preAlmoco"];
+    var posAlmocoValue = data["posAlmoco"];
+    var preJantaValue = data["preJanta"];
+    var posJantaValue = data["posJanta"];
+    var noturnaValue = data["noturna"];
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Atualizar'),
       ),
-      body: Form(
-        key: formKey1,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            bolinhaDosValores(
-                context, matinal(), 'Glicemia Matinal', 'Ao acordar'),
-            Row(
+      body: SingleChildScrollView(
+        reverse: true,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - 150,
+          child: Form(
+            key: formKey1,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                bolinhaDosValores(
-                    context, preAlmoco(), 'Glicemia pré-prandial', 'Almoço'),
-                bolinhaDosValores(
-                    context, posAlmoco(), 'Glicemia pós-prandial', 'Almoço'),
+                bolinhaDosValores(context, matinal(matinalValue),
+                    'Glicemia Matinal', 'Ao acordar'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    bolinhaDosValores(context, preAlmoco(preAlmocoValue),
+                        'Glicemia pré-prandial', 'Almoço'),
+                    bolinhaDosValores(context, posAlmoco(posAlmocoValue),
+                        'Glicemia pós-prandial', 'Almoço'),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    bolinhaDosValores(context, preJanta(preJantaValue),
+                        'Glicemia pré-prandial', 'Jantar'),
+                    bolinhaDosValores(context, posJanta(posJantaValue),
+                        'Glicemia pós-prandial', 'Jantar'),
+                  ],
+                ),
+                bolinhaDosValores(context, noturna(noturnaValue),
+                    'Glicemia Noturna', 'Antes de dormir'),
+                ElevatedButton(
+                    onPressed: () {
+                      update(id);
+                    },
+                    child: Text('Atualizar'))
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                bolinhaDosValores(
-                    context, preJanta(), 'Glicemia pré-prandial', 'Jantar'),
-                bolinhaDosValores(
-                    context, posJanta(), 'Glicemia pós-prandial', 'Jantar'),
-              ],
-            ),
-            bolinhaDosValores(
-                context, noturna(), 'Glicemia Noturna', 'Antes de dormir'),
-            ElevatedButton(
-                onPressed: () {
-                  update(id);
-                  controleRegistroHoje = true;
-                },
-                child: Text('Atualizar'))
-          ],
+          ),
         ),
       ),
     );
@@ -150,99 +174,129 @@ class _UpdatePageState extends State<UpdatePage> {
     );
   }
 
-  SizedBox matinal() {
+  SizedBox matinal(matinalValue) {
     return SizedBox(
       height: 50,
       width: 50,
       child: TextFormField(
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
-        ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => glicemiaMatinal = int.parse(value!),
-      ),
+          initialValue: matinalValue.toString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Colors.white,
+          ),
+          keyboardType: TextInputType.number,
+          onSaved: (value) {
+            if (value == null || value.isEmpty) {
+              value = '0';
+            }
+            glicemiaMatinal = int.parse(value);
+          }),
     );
   }
 
-  SizedBox preAlmoco() {
+  SizedBox preAlmoco(preAlmocoValue) {
     return SizedBox(
       height: 50,
       width: 50,
       child: TextFormField(
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
-        ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => glicemiaPreAlmoco = int.parse(value!),
-      ),
+          initialValue: preAlmocoValue.toString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Colors.white,
+          ),
+          keyboardType: TextInputType.number,
+          onSaved: (value) {
+            if (value == null || value.isEmpty) {
+              value = '0';
+            }
+            glicemiaPreAlmoco = int.parse(value);
+          }),
     );
   }
 
-  SizedBox posAlmoco() {
+  SizedBox posAlmoco(posAlmocoValue) {
     return SizedBox(
       height: 50,
       width: 50,
       child: TextFormField(
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
-        ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => glicemiaPosAlmoco = int.parse(value!),
-      ),
+          initialValue: posAlmocoValue.toString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Colors.white,
+          ),
+          keyboardType: TextInputType.number,
+          onSaved: (value) {
+            if (value == null || value.isEmpty) {
+              value = '0';
+            }
+            glicemiaPosAlmoco = int.parse(value);
+          }),
     );
   }
 
-  SizedBox preJanta() {
+  SizedBox preJanta(preJantaValue) {
     return SizedBox(
       height: 50,
       width: 50,
       child: TextFormField(
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
-        ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => glicemiaPreJanta = int.parse(value!),
-      ),
+          initialValue: preJantaValue.toString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Colors.white,
+          ),
+          keyboardType: TextInputType.number,
+          onSaved: (value) {
+            if (value == null || value.isEmpty) {
+              value = '0';
+            }
+            glicemiaPreJanta = int.parse(value);
+          }),
     );
   }
 
-  SizedBox posJanta() {
+  SizedBox posJanta(posJantaValue) {
     return SizedBox(
       height: 50,
       width: 50,
       child: TextFormField(
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
-        ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => glicemiaPosJanta = int.parse(value!),
-      ),
+          initialValue: posJantaValue.toString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Colors.white,
+          ),
+          keyboardType: TextInputType.number,
+          onSaved: (value) {
+            if (value == null || value.isEmpty) {
+              value = '0';
+            }
+            glicemiaPosJanta = int.parse(value);
+          }),
     );
   }
 
-  SizedBox noturna() {
+  SizedBox noturna(noturnaValue) {
     return SizedBox(
       height: 50,
       width: 50,
       child: TextFormField(
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25,
-          color: Colors.white,
-        ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => glicemiaNoturna = int.parse(value!),
-      ),
+          initialValue: noturnaValue.toString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            color: Colors.white,
+          ),
+          keyboardType: TextInputType.number,
+          onSaved: (value) {
+            if (value == null || value.isEmpty) {
+              value = '0';
+            }
+            glicemiaNoturna = int.parse(value);
+          }),
     );
   }
 }

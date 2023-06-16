@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HistoricoPage extends StatefulWidget {
   const HistoricoPage({super.key});
@@ -15,18 +16,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  Color corJan = Colors.blue;
-  Color corFev = Colors.blue;
-  Color corMar = Colors.blue;
-  Color corAbr = Colors.blue;
-  Color corMai = Colors.blue;
-  Color corJun = Colors.blue;
-  Color corJul = Colors.blue;
-  Color corAgo = Colors.blue;
-  Color corSet = Colors.blue;
-  Color corOut = Colors.blue;
-  Color corNov = Colors.blue;
-  Color corDez = Colors.blue;
+  Color corJan = Colors.blueGrey;
+  Color corFev = Colors.blueGrey;
+  Color corMar = Colors.blueGrey;
+  Color corAbr = Colors.blueGrey;
+  Color corMai = Colors.blueGrey;
+  Color corJun = Colors.blueGrey;
+  Color corJul = Colors.blueGrey;
+  Color corAgo = Colors.blueGrey;
+  Color corSet = Colors.blueGrey;
+  Color corOut = Colors.blueGrey;
+  Color corNov = Colors.blueGrey;
+  Color corDez = Colors.blueGrey;
 
   DateTime date = DateTime.now();
 
@@ -46,11 +47,27 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
   List<int> list1 = <int>[2020, 2021, 2022, 2023];
 
+  void logout(BuildContext context) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      await prefs.remove('autoLogin');
+
+      await auth.signOut();
+
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     if (mesSelect == null) {
       ifzaoGigante();
     }
+
+    final ScrollController _scrollController =
+        ScrollController(initialScrollOffset: 100.0 * date.month - 250);
 
     return Scaffold(
         appBar: AppBar(
@@ -66,7 +83,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 heroTag: 'btnX',
-                onPressed: () => Navigator.of(context).pushNamed('/login'),
+                onPressed: () => logout(context),
                 // backgroundColor: Colors.black26,
                 elevation: 0,
                 child: Icon(Icons.logout),
@@ -76,124 +93,115 @@ class _HistoricoPageState extends State<HistoricoPage> {
         ),
         body: Column(
           children: [
-            Expanded(
-              child: ListView(children: [
-                Column(
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 5,
+              child: DropdownButton<int>(
+                  hint: Text('2023'),
+                  dropdownColor: Colors.white,
+                  items: list1.map((int dropDownIntItem) {
+                    return DropdownMenuItem<int>(
+                      value: dropDownIntItem,
+                      child: Text(dropDownIntItem.toString()),
+                    );
+                  }).toList(),
+                  onChanged: (int? novoItemSelecionado) {
+                    _dropDownItemSelected(novoItemSelecionado!);
+                    setState(() {
+                      itemSelecionado = novoItemSelecionado;
+                    });
+                  },
+                  value: itemSelecionado),
+            ),
+            SizedBox(
+              height: 40,
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _scrollController,
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 5,
-                      child: DropdownButton<int>(
-                          hint: Text('2023'),
-                          dropdownColor: Colors.white,
-                          items: list1.map((int dropDownIntItem) {
-                            return DropdownMenuItem<int>(
-                              value: dropDownIntItem,
-                              child: Text(dropDownIntItem.toString()),
-                            );
-                          }).toList(),
-                          onChanged: (int? novoItemSelecionado) {
-                            _dropDownItemSelected(novoItemSelecionado!);
-                            setState(() {
-                              itemSelecionado = novoItemSelecionado;
-                            });
-                          },
-                          value: itemSelecionado),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          meses('Janeiro', corJan),
-                          meses('Fevereiro', corFev),
-                          meses('Março', corMar),
-                          meses('Abril', corAbr),
-                          meses('Maio', corMai),
-                          meses('Junho', corJun),
-                          meses('Julho', corJul),
-                          meses('Agosto', corAgo),
-                          meses('Setembro', corSet),
-                          meses('Outubro', corOut),
-                          meses('Novembro', corNov),
-                          meses('Dezembro', corDez),
-                        ],
-                      ),
-                    ),
-                    Column(
+                    Row(
                       children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                          child: StreamBuilder<
-                                  QuerySnapshot<Map<String, dynamic>>>(
-                              stream: firestore
-                                  .collection('Glicemia')
-                                  .where('mes',
-                                      isEqualTo: mesSelect ?? date.month)
-                                  .where('ano',
-                                      isEqualTo: itemSelecionado ?? date.year)
-                                  .where('uid',
-                                      isEqualTo: auth.currentUser!.uid)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                var glicemias = snapshot.data!.docs;
-
-                                print('inha $mesSelect');
-                                print('inha2$itemSelecionado');
-
-                                return ListView(
-                                    children: glicemias
-                                        .map((task) => Dismissible(
-                                              key: Key(task.id),
-                                              onDismissed: (_) =>
-                                                  delete(task.id),
-                                              background: Container(
-                                                  color: Colors.red,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text('Apagar',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 25)),
-                                                    ],
-                                                  )),
-                                              child: GestureDetector(
-                                                onDoubleTap: () {
-                                                  Navigator.of(context)
-                                                      .pushNamed('/update',
-                                                          arguments: task.id);
-                                                },
-                                                child: glicemiaDoDia(
-                                                  task['dia'],
-                                                  task['matinal'],
-                                                  task['preAlmoco'],
-                                                  task['posAlmoco'],
-                                                  task['preJanta'],
-                                                  task['posJanta'],
-                                                  task['noturna'],
-                                                ),
-                                              ),
-                                            ))
-                                        .toList());
-                              }),
-                        ),
+                        meses('Janeiro', corJan),
+                        meses('Fevereiro', corFev),
+                        meses('Março', corMar),
+                        meses('Abril', corAbr),
+                        meses('Maio', corMai),
+                        meses('Junho', corJun),
+                        meses('Julho', corJul),
+                        meses('Agosto', corAgo),
+                        meses('Setembro', corSet),
+                        meses('Outubro', corOut),
+                        meses('Novembro', corNov),
+                        meses('Dezembro', corDez),
                       ],
                     ),
-                  ],
-                ),
-              ]),
+                  ]),
+            ),
+            Flexible(
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: firestore
+                      .collection('Glicemia')
+                      .where('mes', isEqualTo: mesSelect ?? date.month)
+                      .where('ano', isEqualTo: itemSelecionado ?? date.year)
+                      .where('uid', isEqualTo: auth.currentUser!.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    var glicemias = snapshot.data!.docs;
+
+                    print('inha $mesSelect');
+                    print('inha2$itemSelecionado');
+
+                    return ListView(
+                        children: glicemias
+                            .map((task) => Dismissible(
+                                  key: Key(task.id),
+                                  onDismissed: (_) => delete(task.id),
+                                  background: Container(
+                                      color: Colors.red,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text('Apagar',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 25)),
+                                        ],
+                                      )),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/update',
+                                        arguments: {
+                                          "id": task.id,
+                                          "matinal": task['matinal'],
+                                          "preAlmoco": task['preAlmoco'],
+                                          "posAlmoco": task['posAlmoco'],
+                                          "preJanta": task['preJanta'],
+                                          "posJanta": task['posJanta'],
+                                          "noturna": task['noturna'],
+                                        },
+                                      );
+                                    },
+                                    child: glicemiaDoDia(
+                                      task['dia'],
+                                      task['matinal'],
+                                      task['preAlmoco'],
+                                      task['posAlmoco'],
+                                      task['preJanta'],
+                                      task['posJanta'],
+                                      task['noturna'],
+                                    ),
+                                  ),
+                                ))
+                            .toList());
+                  }),
             ),
           ],
         ),
@@ -204,19 +212,37 @@ class _HistoricoPageState extends State<HistoricoPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/home');
-                },
-                icon: Icon(Icons.today),
-                tooltip: 'Hoje',
+              Container(
+                width: 80,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  },
+                  icon: Icon(Icons.today),
+                  tooltip: 'Hoje',
+                ),
               ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/historico');
-                },
-                icon: Icon(Icons.history),
-                tooltip: 'Histórico',
+              Container(
+                width: 80,
+                decoration: BoxDecoration(
+                  // color: Colors.lightBlueAccent,
+                  border: Border(
+                    // bottom: BorderSide(color: Colors.black, width: 2),
+                    top: BorderSide(color: Colors.lightBlueAccent, width: 10),
+                    // left: BorderSide(color: Colors.black, width: 2),
+                    // right: BorderSide(color: Colors.black, width: 2),
+                  ),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/historico');
+                  },
+                  icon: Icon(
+                    Icons.history,
+                    color: Colors.lightBlueAccent,
+                  ),
+                  tooltip: 'Histórico',
+                ),
               ),
             ],
           ),
@@ -295,62 +321,62 @@ class _HistoricoPageState extends State<HistoricoPage> {
   ifzaoGigante() {
     if (date.month == 1) {
       setState(() {
-        corJan = Colors.blueGrey;
+        corJan = Colors.blue;
       });
     }
     if (date.month == 2) {
       setState(() {
-        corFev = Colors.blueGrey;
+        corFev = Colors.blue;
       });
     }
     if (date.month == 3) {
       setState(() {
-        corMar = Colors.blueGrey;
+        corMar = Colors.blue;
       });
     }
     if (date.month == 4) {
       setState(() {
-        corAbr = Colors.blueGrey;
+        corAbr = Colors.blue;
       });
     }
     if (date.month == 5) {
       setState(() {
-        corMai = Colors.blueGrey;
+        corMai = Colors.blue;
       });
     }
     if (date.month == 6) {
       setState(() {
-        corJun = Colors.blueGrey;
+        corJun = Colors.blue;
       });
     }
     if (date.month == 7) {
       setState(() {
-        corJul = Colors.blueGrey;
+        corJul = Colors.blue;
       });
     }
     if (date.month == 8) {
       setState(() {
-        corAgo = Colors.blueGrey;
+        corAgo = Colors.blue;
       });
     }
     if (date.month == 9) {
       setState(() {
-        corSet = Colors.blueGrey;
+        corSet = Colors.blue;
       });
     }
     if (date.month == 10) {
       setState(() {
-        corOut = Colors.blueGrey;
+        corOut = Colors.blue;
       });
     }
     if (date.month == 11) {
       setState(() {
-        corNov = Colors.blueGrey;
+        corNov = Colors.blue;
       });
     }
     if (date.month == 12) {
       setState(() {
-        corDez = Colors.blueGrey;
+        corDez = Colors.blue;
       });
     }
   }
@@ -381,19 +407,19 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Janeiro':
         {
           setState(() {
-            corJan = Colors.blueGrey;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corDez = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blue;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corDez = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 1);
         }
@@ -402,18 +428,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Fevereiro':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blueGrey;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blue;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 2);
         }
@@ -422,18 +448,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Março':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blueGrey;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blue;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 3);
         }
@@ -442,18 +468,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Abril':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blueGrey;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blue;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 4);
         }
@@ -462,18 +488,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Maio':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blueGrey;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blue;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 5);
         }
@@ -482,18 +508,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Junho':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blueGrey;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blue;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 6);
         }
@@ -502,18 +528,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Julho':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blueGrey;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blue;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 7);
         }
@@ -522,18 +548,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Agosto':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blueGrey;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blue;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 8);
         }
@@ -542,18 +568,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Setembro':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blueGrey;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blue;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 9);
         }
@@ -562,18 +588,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Outubro':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blueGrey;
-            corNov = Colors.blue;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blue;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 10);
         }
@@ -582,18 +608,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Novembro':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blueGrey;
-            corDez = Colors.blue;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blue;
+            corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 11);
         }
@@ -602,18 +628,18 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Dezembro':
         {
           setState(() {
-            corJan = Colors.blue;
-            corFev = Colors.blue;
-            corMar = Colors.blue;
-            corAbr = Colors.blue;
-            corMai = Colors.blue;
-            corJun = Colors.blue;
-            corJul = Colors.blue;
-            corAgo = Colors.blue;
-            corSet = Colors.blue;
-            corOut = Colors.blue;
-            corNov = Colors.blue;
-            corDez = Colors.blueGrey;
+            corJan = Colors.blueGrey;
+            corFev = Colors.blueGrey;
+            corMar = Colors.blueGrey;
+            corAbr = Colors.blueGrey;
+            corMai = Colors.blueGrey;
+            corJun = Colors.blueGrey;
+            corJul = Colors.blueGrey;
+            corAgo = Colors.blueGrey;
+            corSet = Colors.blueGrey;
+            corOut = Colors.blueGrey;
+            corNov = Colors.blueGrey;
+            corDez = Colors.blue;
           });
           setState(() => mesSelect = 12);
         }

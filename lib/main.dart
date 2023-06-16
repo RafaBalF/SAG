@@ -40,7 +40,14 @@ class MyApp extends StatelessWidget {
           '/home': (BuildContext context) => HomePage(),
           '/historico': (BuildContext context) => HistoricoPage(),
           '/cadastro': (BuildContext context) => RegisterPage(),
-          '/update': (BuildContext context) => UpdatePage(),
+          '/update': (BuildContext context) => UpdatePage(
+              // matinal: null,
+              // preAlmoco: null,
+              // posAlmoco: null,
+              // preJanta: null,
+              // posJanta: null,
+              // noturna: null,
+              ),
         });
   }
 }

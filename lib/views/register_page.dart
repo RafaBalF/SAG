@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
           await auth.createUserWithEmailAndPassword(
               email: email, password: senha);
 
-          Navigator.of(context).pushNamed('/home');
+          Navigator.of(context).pushReplacementNamed('/home');
         } catch (e) {
           showDialog(
             context: context,
@@ -63,61 +63,65 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: Text('Registre-se'),
       ),
-      body: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(300.0),
-                child: Image.asset(
-                  'assets/logo_sag.jpg',
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                margin: EdgeInsets.all(8),
-                child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Login',
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 150),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(300.0),
+                  child: Image.asset(
+                    'assets/logo_sag.jpg',
                   ),
-                  onSaved: (value) => email = value!,
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.all(8),
-                child: TextFormField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Senha',
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  margin: EdgeInsets.all(8),
+                  child: TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Login',
+                    ),
+                    onSaved: (value) => email = value!,
                   ),
-                  onSaved: (value) => senha = value!,
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.all(8),
-                child: TextFormField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Confirmar Senha',
+                Container(
+                  margin: EdgeInsets.all(8),
+                  child: TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Senha',
+                    ),
+                    onSaved: (value) => senha = value!,
                   ),
-                  onSaved: (value) => confirmarSenha = value!,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  register(context);
-                },
-                child: Text('Registrar-se'),
-              ),
-            ],
-          )),
+                Container(
+                  margin: EdgeInsets.all(8),
+                  child: TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirmar Senha',
+                    ),
+                    onSaved: (value) => confirmarSenha = value!,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    register(context);
+                  },
+                  child: Text('Registrar-se'),
+                ),
+              ],
+            )),
+      ),
     );
   }
 }
