@@ -52,6 +52,12 @@ class _HistoricoPageState extends State<HistoricoPage> {
       final prefs = await SharedPreferences.getInstance();
 
       await prefs.remove('autoLogin');
+      await prefs.remove('fatorMatinal');
+      await prefs.remove('fatorPreAlmoco');
+      await prefs.remove('fatorPosAlmoco');
+      await prefs.remove('fatorPreJanta');
+      await prefs.remove('fatorPosJanta');
+      await prefs.remove('fatorNoturna');
 
       await auth.signOut();
 
@@ -94,23 +100,26 @@ class _HistoricoPageState extends State<HistoricoPage> {
         body: Column(
           children: [
             SizedBox(
-              width: MediaQuery.of(context).size.width - 5,
-              child: DropdownButton<int>(
-                  hint: Text('2023'),
-                  dropdownColor: Colors.white,
-                  items: list1.map((int dropDownIntItem) {
-                    return DropdownMenuItem<int>(
-                      value: dropDownIntItem,
-                      child: Text(dropDownIntItem.toString()),
-                    );
-                  }).toList(),
-                  onChanged: (int? novoItemSelecionado) {
-                    _dropDownItemSelected(novoItemSelecionado!);
-                    setState(() {
-                      itemSelecionado = novoItemSelecionado;
-                    });
-                  },
-                  value: itemSelecionado),
+              // width: MediaQuery.of(context).size.width - 5,
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: DropdownButtonFormField<int>(
+                    hint: Text('2023'),
+                    dropdownColor: Colors.white,
+                    items: list1.map((int dropDownIntItem) {
+                      return DropdownMenuItem<int>(
+                        value: dropDownIntItem,
+                        child: Text(dropDownIntItem.toString()),
+                      );
+                    }).toList(),
+                    onChanged: (int? novoItemSelecionado) {
+                      _dropDownItemSelected(novoItemSelecionado!);
+                      setState(() {
+                        itemSelecionado = novoItemSelecionado;
+                      });
+                    },
+                    value: itemSelecionado),
+              ),
             ),
             SizedBox(
               height: 40,
@@ -286,27 +295,27 @@ class _HistoricoPageState extends State<HistoricoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Matinal: $matinal',
+                    'Matinal: ${matinal.toStringAsFixed(0)}',
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    'Pré-pradial - Almoço: $preAlmoco',
+                    'Pré-pradial - Almoço: ${preAlmoco.toStringAsFixed(0)}',
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    'Pós-pradial - Almoço: $posAlmoco',
+                    'Pós-pradial - Almoço: ${posAlmoco.toStringAsFixed(0)}',
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    'Pré-pradial - Janta: $preJanta',
+                    'Pré-pradial - Janta: ${preJanta.toStringAsFixed(0)}',
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    'Pós-pradial - Janta: $posJanta',
+                    'Pós-pradial - Janta: ${posJanta.toStringAsFixed(0)}',
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    'Noturna: $noturna',
+                    'Noturna: ${noturna.toStringAsFixed(0)}',
                     style: TextStyle(color: Colors.white),
                   ),
                 ],

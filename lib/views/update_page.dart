@@ -179,7 +179,7 @@ class _UpdatePageState extends State<UpdatePage> {
       height: 50,
       width: 50,
       child: TextFormField(
-          initialValue: matinalValue.toString(),
+          initialValue: matinalValue.toStringAsFixed(0),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -200,7 +200,7 @@ class _UpdatePageState extends State<UpdatePage> {
       height: 50,
       width: 50,
       child: TextFormField(
-          initialValue: preAlmocoValue.toString(),
+          initialValue: preAlmocoValue.toStringAsFixed(0),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -221,7 +221,7 @@ class _UpdatePageState extends State<UpdatePage> {
       height: 50,
       width: 50,
       child: TextFormField(
-          initialValue: posAlmocoValue.toString(),
+          initialValue: posAlmocoValue.toStringAsFixed(0),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -242,7 +242,7 @@ class _UpdatePageState extends State<UpdatePage> {
       height: 50,
       width: 50,
       child: TextFormField(
-          initialValue: preJantaValue.toString(),
+          initialValue: preJantaValue.toStringAsFixed(0),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -263,7 +263,7 @@ class _UpdatePageState extends State<UpdatePage> {
       height: 50,
       width: 50,
       child: TextFormField(
-          initialValue: posJantaValue.toString(),
+          initialValue: posJantaValue.toStringAsFixed(0),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -284,7 +284,7 @@ class _UpdatePageState extends State<UpdatePage> {
       height: 50,
       width: 50,
       child: TextFormField(
-          initialValue: noturnaValue.toString(),
+          initialValue: noturnaValue.toStringAsFixed(0),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,

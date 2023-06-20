@@ -15,12 +15,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var formKey1 = GlobalKey<FormState>();
 
-  int glicemiaMatinal = 0;
-  int glicemiaPreAlmoco = 0;
-  int glicemiaPosAlmoco = 0;
-  int glicemiaPreJanta = 0;
-  int glicemiaPosJanta = 0;
-  int glicemiaNoturna = 0;
+  double glicemiaMatinal = 0;
+  double glicemiaPreAlmoco = 0;
+  double glicemiaPosAlmoco = 0;
+  double glicemiaPreJanta = 0;
+  double glicemiaPosJanta = 0;
+  double glicemiaNoturna = 0;
 
   int? controleRegistroHojeDia = 0;
   String? controleRegistroHojeUsuario = '';
@@ -31,8 +31,6 @@ class _HomePageState extends State<HomePage> {
   DateTime date = DateTime.now();
 
   void salvar(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-
     firestore
         .collection('Glicemia')
         .where('dia', isEqualTo: date.day)
@@ -41,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         .where('uid', isEqualTo: auth.currentUser!.uid)
         .get()
         .then(
-      (querySnapshot) {
+      (querySnapshot) async {
         print("Successfully completed");
         print('documetno2 ${querySnapshot.docs.isEmpty}');
 
@@ -74,6 +72,14 @@ class _HomePageState extends State<HomePage> {
 
             formKey1.currentState?.reset();
 
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove('fatorMatinal');
+            await prefs.remove('fatorPreAlmoco');
+            await prefs.remove('fatorPosAlmoco');
+            await prefs.remove('fatorPreJanta');
+            await prefs.remove('fatorPosJanta');
+            await prefs.remove('fatorNoturna');
+
             showDialog(
               context: context,
               builder: (_) {
@@ -88,10 +94,6 @@ class _HomePageState extends State<HomePage> {
       },
       onError: (e) => print("Error completing: $e"),
     );
-
-    await prefs.remove('controleRegistroHoje');
-    await prefs.remove('controleRegistroHojeDia');
-    await prefs.remove('controleRegistroHojeUsuario');
   }
 
   void logout(BuildContext context) async {
@@ -99,6 +101,12 @@ class _HomePageState extends State<HomePage> {
       final prefs = await SharedPreferences.getInstance();
 
       await prefs.remove('autoLogin');
+      await prefs.remove('fatorMatinal');
+      await prefs.remove('fatorPreAlmoco');
+      await prefs.remove('fatorPosAlmoco');
+      await prefs.remove('fatorPreJanta');
+      await prefs.remove('fatorPosJanta');
+      await prefs.remove('fatorNoturna');
 
       await auth.signOut();
 
@@ -107,8 +115,22 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {}
   }
 
+  getGlicemia() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      glicemiaMatinal = prefs.getDouble('fatorMatinal') ?? 0;
+      glicemiaPreAlmoco = prefs.getDouble('fatorPreAlmoco') ?? 0;
+      glicemiaPosAlmoco = prefs.getDouble('fatorPosAlmoco') ?? 0;
+      glicemiaPreJanta = prefs.getDouble('fatorPreJanta') ?? 0;
+      glicemiaPosJanta = prefs.getDouble('fatorPosJanta') ?? 0;
+      glicemiaNoturna = prefs.getDouble('fatorNoturna') ?? 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    getGlicemia();
     return Scaffold(
         appBar: AppBar(
           leading: Image.asset(
@@ -140,28 +162,28 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  bolinhaDosValores(
-                      context, matinal(), 'Glicemia Matinal', 'Ao acordar'),
+                  bolinhaDosValores(context, glicemiaMatinal,
+                      'Glicemia Matinal', 'Ao acordar', 'matinal'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      bolinhaDosValores(context, preAlmoco(),
-                          'Glicemia pré-prandial', 'Almoço'),
-                      bolinhaDosValores(context, posAlmoco(),
-                          'Glicemia pós-prandial', 'Almoço'),
+                      bolinhaDosValores(context, glicemiaPreAlmoco,
+                          'Glicemia pré-prandial', 'Almoço', 'preAlmoco'),
+                      bolinhaDosValores(context, glicemiaPosAlmoco,
+                          'Glicemia pós-prandial', 'Almoço', 'posAlmoco'),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      bolinhaDosValores(context, preJanta(),
-                          'Glicemia pré-prandial', 'Jantar'),
-                      bolinhaDosValores(context, posJanta(),
-                          'Glicemia pós-prandial', 'Jantar'),
+                      bolinhaDosValores(context, glicemiaPreJanta,
+                          'Glicemia pré-prandial', 'Jantar', 'preJanta'),
+                      bolinhaDosValores(context, glicemiaPosJanta,
+                          'Glicemia pós-prandial', 'Jantar', 'posJanta'),
                     ],
                   ),
-                  bolinhaDosValores(context, noturna(), 'Glicemia Noturna',
-                      'Antes de dormir'),
+                  bolinhaDosValores(context, glicemiaNoturna,
+                      'Glicemia Noturna', 'Antes de dormir', 'noturna'),
                   ElevatedButton(
                       onPressed: () {
                         salvar(context);
@@ -182,12 +204,8 @@ class _HomePageState extends State<HomePage> {
               Container(
                 width: 80,
                 decoration: BoxDecoration(
-                  // color: Colors.lightBlueAccent,
                   border: Border(
-                    // bottom: BorderSide(color: Colors.black, width: 2),
                     top: BorderSide(color: Colors.lightBlueAccent, width: 10),
-                    // left: BorderSide(color: Colors.black, width: 2),
-                    // right: BorderSide(color: Colors.black, width: 2),
                   ),
                 ),
                 child: IconButton(
@@ -214,28 +232,40 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Container bolinhaDosValores(context, SizedBox glicemia, rotina, refeicao) {
-    return Container(
-      height: 120,
-      width: 120,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.lightBlue,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            glicemia,
-            SizedBox(
-              height: 10,
-            ),
-            sumarioRotina(rotina),
-            SizedBox(
-              height: 5,
-            ),
-            prandial(refeicao),
-          ],
+  GestureDetector bolinhaDosValores(
+      context, glicemiaValue, rotina, refeicao, fator) {
+    return GestureDetector(
+      onTap: () =>
+          Navigator.of(context).pushNamed('/calculo', arguments: fator),
+      child: Container(
+        height: 120,
+        width: 120,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.lightBlue,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${glicemiaValue.toStringAsFixed(0) ?? ''}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              sumarioRotina(rotina),
+              SizedBox(
+                height: 5,
+              ),
+              prandial(refeicao),
+            ],
+          ),
         ),
       ),
     );
@@ -264,139 +294,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  SizedBox matinal() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: TextFormField(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.white,
-          ),
-          keyboardType: TextInputType.number,
-          onSaved: (value) {
-            if (value == null || value.isEmpty) {
-              value = '0';
-            }
-            glicemiaMatinal = int.parse(value);
-          }),
-    );
-  }
-
-  SizedBox preAlmoco() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: TextFormField(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.white,
-          ),
-          keyboardType: TextInputType.number,
-          onSaved: (value) {
-            if (value == null || value.isEmpty) {
-              value = '0';
-            }
-            glicemiaPreAlmoco = int.parse(value);
-          }),
-    );
-  }
-
-  SizedBox posAlmoco() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: TextFormField(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.white,
-          ),
-          keyboardType: TextInputType.number,
-          onSaved: (value) {
-            if (value == null || value.isEmpty) {
-              value = '0';
-            }
-            glicemiaPosAlmoco = int.parse(value);
-          }),
-    );
-  }
-
-  SizedBox preJanta() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: TextFormField(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.white,
-          ),
-          keyboardType: TextInputType.number,
-          onSaved: (value) {
-            if (value == null || value.isEmpty) {
-              value = '0';
-            }
-            glicemiaPreJanta = int.parse(value);
-          }),
-    );
-  }
-
-  SizedBox posJanta() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: TextFormField(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.white,
-          ),
-          keyboardType: TextInputType.number,
-          onSaved: (value) {
-            if (value == null || value.isEmpty) {
-              value = '0';
-            }
-            glicemiaPosJanta = int.parse(value);
-          }),
-    );
-  }
-
-  SizedBox noturna() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: TextFormField(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.white,
-          ),
-          keyboardType: TextInputType.number,
-          onSaved: (value) {
-            if (value == null || value.isEmpty) {
-              value = '0';
-            }
-            glicemiaNoturna = int.parse(value);
-          }),
-    );
-  }
 }
-
-
-
-// RichText valoresGlicemia(glicemia) {
-//   return RichText(
-//     text: TextSpan(
-//       text: glicemia,
-//       style: TextStyle(
-//         fontWeight: FontWeight.bold,
-//         fontSize: 40,
-//         color: Colors.white,
-//       ),
-//     ),
-//   );
-// }

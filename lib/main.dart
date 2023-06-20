@@ -2,6 +2,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:sag/views/calculo_page.dart';
 import 'package:sag/views/historico_page.dart';
 import 'package:sag/views/home_page.dart';
 import 'package:sag/views/login_page.dart';
@@ -40,14 +41,8 @@ class MyApp extends StatelessWidget {
           '/home': (BuildContext context) => HomePage(),
           '/historico': (BuildContext context) => HistoricoPage(),
           '/cadastro': (BuildContext context) => RegisterPage(),
-          '/update': (BuildContext context) => UpdatePage(
-              // matinal: null,
-              // preAlmoco: null,
-              // posAlmoco: null,
-              // preJanta: null,
-              // posJanta: null,
-              // noturna: null,
-              ),
+          '/update': (BuildContext context) => UpdatePage(),
+          '/calculo': (BuildContext context) => CalculoPage(),
         });
   }
 }

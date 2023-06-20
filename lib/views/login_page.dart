@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text('Não tem uma conta?'),
                     TextButton(
                         onPressed: () => Navigator.of(context)
-                            .pushReplacementNamed('/cadastro'),
+                            .pushNamed('/cadastro'),
                         child: Text('Registre-se')),
                   ],
                 )
