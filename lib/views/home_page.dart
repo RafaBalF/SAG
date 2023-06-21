@@ -115,6 +115,12 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {}
   }
 
+  navegar(fator) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('fator', fator);
+    Navigator.of(context).pushNamed('/calculo');
+  }
+
   getGlicemia() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -209,7 +215,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  },
                   icon: Icon(
                     Icons.today,
                     color: Colors.lightBlueAccent,
@@ -235,8 +243,7 @@ class _HomePageState extends State<HomePage> {
   GestureDetector bolinhaDosValores(
       context, glicemiaValue, rotina, refeicao, fator) {
     return GestureDetector(
-      onTap: () =>
-          Navigator.of(context).pushNamed('/calculo', arguments: fator),
+      onTap: () => navegar(fator),
       child: Container(
         height: 120,
         width: 120,

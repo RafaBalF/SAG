@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_typing_uninitialized_variables
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +22,8 @@ class _CalculoPageState extends State<CalculoPage> {
   double? insulinaCaloria = 0;
   int? caloriasConsumidas;
   String? idade;
+
+  String? fator;
 
   List<String> list1 = <String>[
     '0 a 5 anos',
@@ -67,6 +69,9 @@ class _CalculoPageState extends State<CalculoPage> {
       setState(() => reducaoGlicemia = (glicemiaValue! - 100) / fsi!);
 
       final prefs = await SharedPreferences.getInstance();
+
+      await prefs.remove('cameraScan');
+      await prefs.remove('fator');
 
       switch (fator) {
         case 'matinal':
@@ -165,8 +170,15 @@ class _CalculoPageState extends State<CalculoPage> {
     });
   }
 
+  getFator() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() => fator = prefs.getString('fator') ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
+    getFator();
     return Scaffold(
         appBar: AppBar(
           title: Text('Calculo de insulina'),
@@ -175,10 +187,9 @@ class _CalculoPageState extends State<CalculoPage> {
   }
 
   SingleChildScrollView telaGlicemia() {
-    Object? data = ModalRoute.of(context)?.settings.arguments;
+    Object? dataCamera = ModalRoute.of(context)?.settings.arguments;
 
-    var fator = data;
-    print(fator);
+    var cameraScan = dataCamera ?? '';
 
     return SingleChildScrollView(
       reverse: true,
@@ -194,6 +205,7 @@ class _CalculoPageState extends State<CalculoPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
+                      initialValue: cameraScan.toString(),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -201,7 +213,9 @@ class _CalculoPageState extends State<CalculoPage> {
                         labelText: 'Glicêmia',
                         suffixIcon: IconButton(
                           icon: Icon(Icons.camera_alt_outlined),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/camera');
+                          },
                         ),
                       ),
                       validator: (value) {
