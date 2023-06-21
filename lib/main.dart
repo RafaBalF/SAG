@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SAG',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(primarySwatch: Colors.green),
         home: LoginPage(),
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginPage(),

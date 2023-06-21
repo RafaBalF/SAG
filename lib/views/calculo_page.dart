@@ -315,7 +315,7 @@ class _CalculoPageState extends State<CalculoPage> {
                   ),
                 ),
                 Container(
-                  color: Colors.lightBlue,
+                  color: Colors.green,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -342,7 +342,7 @@ class _CalculoPageState extends State<CalculoPage> {
         width: 120,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.lightBlue,
+          color: Colors.green,
         ),
         child: Center(
           child: Column(

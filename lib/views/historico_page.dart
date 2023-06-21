@@ -78,7 +78,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
     return Scaffold(
         appBar: AppBar(
           leading: Image.asset(
-            'assets/logo_sag.jpg',
+            'assets/logo_sag.jpeg',
             width: 5,
             height: 5,
           ),
@@ -217,7 +217,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
         bottomNavigationBar: Container(
           height: 50,
           width: 10,
-          color: Colors.blue[50],
+          color: Colors.green[50],
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -234,10 +234,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
               Container(
                 width: 80,
                 decoration: BoxDecoration(
-                  // color: Colors.lightBlueAccent,
+                  // color: Colors.greenAccent,
                   border: Border(
                     // bottom: BorderSide(color: Colors.black, width: 2),
-                    top: BorderSide(color: Colors.lightBlueAccent, width: 10),
+                    top: BorderSide(color: Colors.greenAccent, width: 10),
                     // left: BorderSide(color: Colors.black, width: 2),
                     // right: BorderSide(color: Colors.black, width: 2),
                   ),
@@ -248,7 +248,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                   },
                   icon: Icon(
                     Icons.history,
-                    color: Colors.lightBlueAccent,
+                    color: Colors.greenAccent,
                   ),
                   tooltip: 'Histórico',
                 ),
@@ -264,7 +264,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
       height: 150,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Colors.blue[200],
+        color: Colors.green[200],
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -330,62 +330,62 @@ class _HistoricoPageState extends State<HistoricoPage> {
   ifzaoGigante() {
     if (date.month == 1) {
       setState(() {
-        corJan = Colors.blue;
+        corJan = Colors.green;
       });
     }
     if (date.month == 2) {
       setState(() {
-        corFev = Colors.blue;
+        corFev = Colors.green;
       });
     }
     if (date.month == 3) {
       setState(() {
-        corMar = Colors.blue;
+        corMar = Colors.green;
       });
     }
     if (date.month == 4) {
       setState(() {
-        corAbr = Colors.blue;
+        corAbr = Colors.green;
       });
     }
     if (date.month == 5) {
       setState(() {
-        corMai = Colors.blue;
+        corMai = Colors.green;
       });
     }
     if (date.month == 6) {
       setState(() {
-        corJun = Colors.blue;
+        corJun = Colors.green;
       });
     }
     if (date.month == 7) {
       setState(() {
-        corJul = Colors.blue;
+        corJul = Colors.green;
       });
     }
     if (date.month == 8) {
       setState(() {
-        corAgo = Colors.blue;
+        corAgo = Colors.green;
       });
     }
     if (date.month == 9) {
       setState(() {
-        corSet = Colors.blue;
+        corSet = Colors.green;
       });
     }
     if (date.month == 10) {
       setState(() {
-        corOut = Colors.blue;
+        corOut = Colors.green;
       });
     }
     if (date.month == 11) {
       setState(() {
-        corNov = Colors.blue;
+        corNov = Colors.green;
       });
     }
     if (date.month == 12) {
       setState(() {
-        corDez = Colors.blue;
+        corDez = Colors.green;
       });
     }
   }
@@ -416,7 +416,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
       case 'Janeiro':
         {
           setState(() {
-            corJan = Colors.blue;
+            corJan = Colors.green;
             corFev = Colors.blueGrey;
             corMar = Colors.blueGrey;
             corAbr = Colors.blueGrey;
@@ -438,7 +438,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
         {
           setState(() {
             corJan = Colors.blueGrey;
-            corFev = Colors.blue;
+            corFev = Colors.green;
             corMar = Colors.blueGrey;
             corAbr = Colors.blueGrey;
             corMai = Colors.blueGrey;
@@ -459,7 +459,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
           setState(() {
             corJan = Colors.blueGrey;
             corFev = Colors.blueGrey;
-            corMar = Colors.blue;
+            corMar = Colors.green;
             corAbr = Colors.blueGrey;
             corMai = Colors.blueGrey;
             corJun = Colors.blueGrey;
@@ -480,7 +480,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corJan = Colors.blueGrey;
             corFev = Colors.blueGrey;
             corMar = Colors.blueGrey;
-            corAbr = Colors.blue;
+            corAbr = Colors.green;
             corMai = Colors.blueGrey;
             corJun = Colors.blueGrey;
             corJul = Colors.blueGrey;
@@ -501,7 +501,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corFev = Colors.blueGrey;
             corMar = Colors.blueGrey;
             corAbr = Colors.blueGrey;
-            corMai = Colors.blue;
+            corMai = Colors.green;
             corJun = Colors.blueGrey;
             corJul = Colors.blueGrey;
             corAgo = Colors.blueGrey;
@@ -522,7 +522,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corMar = Colors.blueGrey;
             corAbr = Colors.blueGrey;
             corMai = Colors.blueGrey;
-            corJun = Colors.blue;
+            corJun = Colors.green;
             corJul = Colors.blueGrey;
             corAgo = Colors.blueGrey;
             corSet = Colors.blueGrey;
@@ -543,7 +543,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corAbr = Colors.blueGrey;
             corMai = Colors.blueGrey;
             corJun = Colors.blueGrey;
-            corJul = Colors.blue;
+            corJul = Colors.green;
             corAgo = Colors.blueGrey;
             corSet = Colors.blueGrey;
             corOut = Colors.blueGrey;
@@ -564,7 +564,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corMai = Colors.blueGrey;
             corJun = Colors.blueGrey;
             corJul = Colors.blueGrey;
-            corAgo = Colors.blue;
+            corAgo = Colors.green;
             corSet = Colors.blueGrey;
             corOut = Colors.blueGrey;
             corNov = Colors.blueGrey;
@@ -585,7 +585,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corJun = Colors.blueGrey;
             corJul = Colors.blueGrey;
             corAgo = Colors.blueGrey;
-            corSet = Colors.blue;
+            corSet = Colors.green;
             corOut = Colors.blueGrey;
             corNov = Colors.blueGrey;
             corDez = Colors.blueGrey;
@@ -606,7 +606,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corJul = Colors.blueGrey;
             corAgo = Colors.blueGrey;
             corSet = Colors.blueGrey;
-            corOut = Colors.blue;
+            corOut = Colors.green;
             corNov = Colors.blueGrey;
             corDez = Colors.blueGrey;
           });
@@ -627,7 +627,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corAgo = Colors.blueGrey;
             corSet = Colors.blueGrey;
             corOut = Colors.blueGrey;
-            corNov = Colors.blue;
+            corNov = Colors.green;
             corDez = Colors.blueGrey;
           });
           setState(() => mesSelect = 11);
@@ -648,7 +648,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             corSet = Colors.blueGrey;
             corOut = Colors.blueGrey;
             corNov = Colors.blueGrey;
-            corDez = Colors.blue;
+            corDez = Colors.green;
           });
           setState(() => mesSelect = 12);
         }

@@ -129,7 +129,7 @@ class _UpdatePageState extends State<UpdatePage> {
       width: 120,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.lightBlue,
+        color: Colors.green,
       ),
       child: Center(
         child: Column(

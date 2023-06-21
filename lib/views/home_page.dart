@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           leading: Image.asset(
-            'assets/logo_sag.jpg',
+            'assets/logo_sag.jpeg',
             width: 5,
             height: 5,
           ),
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: Container(
           height: 50,
           width: 10,
-          color: Colors.blue[50],
+          color: Colors.green[50],
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                 width: 80,
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: Colors.lightBlueAccent, width: 10),
+                    top: BorderSide(color: Colors.greenAccent, width: 10),
                   ),
                 ),
                 child: IconButton(
@@ -220,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   icon: Icon(
                     Icons.today,
-                    color: Colors.lightBlueAccent,
+                    color: Colors.greenAccent,
                   ),
                   tooltip: 'Hoje',
                 ),
@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
         width: 120,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.lightBlue,
+          color: Colors.green,
         ),
         child: Center(
           child: Column(
